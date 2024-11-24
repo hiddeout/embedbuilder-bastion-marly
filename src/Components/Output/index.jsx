@@ -15,13 +15,13 @@ class Output extends React.Component {
       console.error('Could not find form with ID "embed-builder"');
       return;
     }
-
+  
     let embedScript = '{embed}';
-
+  
     // Color (default to #000000 if not specified)
     let colorElement = form.elements['color'];
-    let color = colorElement ? colorElement.value : '#000000';
-    embedScript += `$v{color: "${color}"}`;
+    let color = colorElement && colorElement.value ? `#${colorElement.value}` : '#000000';
+    embedScript += `$v{color: ${color}}`;
 
     // Author
     let authorNameElement = form.elements['author:name'];
@@ -193,10 +193,10 @@ class Output extends React.Component {
         <div id="output-container">
           <div className="controller">
             <button onClick={() => this.generateJSON()}>
-              <span role="img" aria-label="Gear Emoji">⚙</span>&ensp;Generate Script
+              <span role="img" aria-label="Gear Emoji">⚙</span>&ensp;Generate Embed Code
             </button>
             <button onClick={() => this.copyJSON()}>
-              <span role="img" aria-label="Copy Emoji">🔗</span>&ensp;Copy Script
+              <span role="img" aria-label="Copy Emoji">🔗</span>&ensp;Copy Embed Code
             </button>
           </div>
           <div className="output">
