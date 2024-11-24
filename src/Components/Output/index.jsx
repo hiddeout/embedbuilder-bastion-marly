@@ -16,12 +16,12 @@ class Output extends React.Component {
       return;
     }
   
-    let embedScript = '{embed}';
+    let embedScript = '{embed}\n';
   
     // Color (default to #000000 if not specified)
     let colorElement = form.elements['color'];
     let color = colorElement && colorElement.value ? `#${colorElement.value}` : '#000000';
-    embedScript += `$v{color: ${color}}`;
+    embedScript += `$v{color: ${color}}\n`;
 
     // Author
     let authorNameElement = form.elements['author:name'];
@@ -30,32 +30,32 @@ class Output extends React.Component {
       
       let author_icon_url = form.elements['author:icon_url']?.value;
       if (author_icon_url && RegEx.imageURL.test(author_icon_url)) {
-        author_parts.push(`"${author_icon_url}"`);
+        author_parts.push(`${author_icon_url}`);
         
         let author_url = form.elements['author:url']?.value;
         if (author_url && RegEx.URL.test(author_url)) {
-          author_parts.push(`"${author_url}"`);
+          author_parts.push(`${author_url}`);
         }
       }
-      embedScript += `$v{author: ${author_parts.join(' && ')}}`;
+      embedScript += `$v{author: ${author_parts.join(' && ')}}\n`;
     }
 
     // Title
     let titleElement = form.elements['title'];
     if (titleElement?.value) {
-      embedScript += `$v{title: "${titleElement.value}"}`;
+      embedScript += `$v{title: ${titleElement.value}}\n`;
     }
 
     // URL
     let urlElement = form.elements['url'];
     if (urlElement?.value && RegEx.URL.test(urlElement.value)) {
-      embedScript += `$v{url: "${urlElement.value}"}`;
+      embedScript += `$v{url: ${urlElement.value}}\n`;
     }
 
     // Description
     let descriptionElement = form.elements['description'];
     if (descriptionElement?.value) {
-      embedScript += `$v{description: "${descriptionElement.value}"}`;
+      embedScript += `$v{description: ${descriptionElement.value}}\n`;
     }
 
     // Fields
@@ -67,7 +67,7 @@ class Output extends React.Component {
         let fieldInline = form.elements[`field-${i}:inline`]?.checked;
   
         if (fieldName && fieldValue) {
-          embedScript += `$v{field: "${fieldName}" && "${fieldValue}"${fieldInline ? ' && inline' : ''}}`;
+          embedScript += `$v{field: ${fieldName} && ${fieldValue}${fieldInline ? ' && inline' : ''}}\n`;
         }
       }
     }
@@ -81,11 +81,14 @@ class Output extends React.Component {
         let buttonEmoji = form.elements[`button-${i}:emoji`]?.value;
 
         if (buttonUrl && buttonLabel) {
-          let buttonParts = [buttonUrl, buttonLabel];
+          let buttonParts = [
+            `${buttonUrl}`,
+            buttonLabel
+          ];
           if (buttonEmoji) {
             buttonParts.push(buttonEmoji);
           }
-          embedScript += `$v{button: ${buttonParts.map(part => `"${part}"`).join(' && ')}}`;
+          embedScript += `$v{button: ${buttonParts.join(' && ')}}\n`;
         }
       }
     }
@@ -93,13 +96,13 @@ class Output extends React.Component {
     // Thumbnail
     let thumbnailElement = form.elements['thumbnail:url'];
     if (thumbnailElement?.value && RegEx.imageURL.test(thumbnailElement.value)) {
-      embedScript += `$v{thumbnail: "${thumbnailElement.value}"}`;
+      embedScript += `$v{thumbnail: ${thumbnailElement.value}}\n`;
     }
 
     // Image
     let imageElement = form.elements['image:url'];
     if (imageElement?.value && RegEx.imageURL.test(imageElement.value)) {
-      embedScript += `$v{image: "${imageElement.value}"}`;
+      embedScript += `$v{image: ${imageElement.value}}\n`;
     }
 
     // Footer
@@ -111,14 +114,17 @@ class Output extends React.Component {
       if (footerIconElement?.value && RegEx.imageURL.test(footerIconElement.value)) {
         footer_parts.push(`"${footerIconElement.value}"`);
       }
-      embedScript += `$v{footer: ${footer_parts.join(' && ')}}`;
+      embedScript += `$v{footer: ${footer_parts.join(' && ')}}\n`;
     }
 
     // Timestamp
     let timestampElement = form.elements['timestamp'];
     if (timestampElement?.checked) {
-      embedScript += '$v{timestamp}';
+      embedScript += '$v{timestamp}\n';
     }
+
+    // Remove trailing newline if exists
+    embedScript = embedScript.trim();
 
     // Debugging: Log the generated embedScript
     console.log('Generated embedScript:', embedScript);
@@ -144,6 +150,7 @@ class Output extends React.Component {
     output = output.replace(/\{embed\}/g, '<span class="highlight keyword">{embed}</span>');
     output = output.replace(/\$v\{([^}]+)\}/g, '<span class="highlight function">$v{$1}</span>');
     output = output.replace(/: "([^"}&]+)"/g, ': <span class="highlight string">"$1"</span>');
+    output = output.replace(/\n/g, '<br>');
     return output;
   }
 
