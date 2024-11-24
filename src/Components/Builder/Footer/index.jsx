@@ -33,12 +33,27 @@ class Footer extends React.Component {
 
   render() {
     return(
-      <div className = "embed-group embed-footer">
+      <div className="embed-group embed-footer">
+        <input 
+          className="footer-icon-url"
+          type="text"
+          placeholder="Footer Icon URL"
+          value={this.state.iconURL}
+          onChange={this.updateIconURL.bind(this)}
+          style={{ marginBottom: '10px', width: '100%' }}
+        />
+        <input 
+          type="text"
+          placeholder="Footer Text"
+          value={this.state.text}
+          onChange={this.updateText.bind(this)}
+          style={{ marginBottom: '10px', width: '100%' }}
+        />
         <div className="embed-timestamp">
           <label>
             <input
-              name = "timestamp"
-              type = "checkbox"
+              name="timestamp"
+              type="checkbox"
             />
             Add Timestamp
           </label>

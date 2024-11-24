@@ -5,6 +5,7 @@ import Title from './Title';
 import Description from './Description';
 import Thumbnail from './Thumbnail';
 import Fields from './Fields';
+import Buttons from './Button';
 import Image from './Image';
 import Footer from './Footer';
 
@@ -24,6 +25,7 @@ class Output extends React.Component {
                   <Description />
                   <Thumbnail />
                   <Fields />
+                  <Buttons /> {/* Include Buttons component */}
                   <Image />
 
                 </div>

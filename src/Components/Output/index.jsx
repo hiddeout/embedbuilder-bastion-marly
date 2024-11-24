@@ -21,7 +21,7 @@ class Output extends React.Component {
     // Color (default to #000000 if not specified)
     let colorElement = form.elements['color'];
     let color = colorElement ? colorElement.value : '#000000';
-    embedScript += `$v{color: ${color}}`;
+    embedScript += `$v{color: "${color}"}`;
 
     // Author
     let authorNameElement = form.elements['author:name'];
@@ -30,11 +30,11 @@ class Output extends React.Component {
       
       let author_icon_url = form.elements['author:icon_url']?.value;
       if (author_icon_url && RegEx.imageURL.test(author_icon_url)) {
-        author_parts.push(author_icon_url);
+        author_parts.push(`"${author_icon_url}"`);
         
         let author_url = form.elements['author:url']?.value;
         if (author_url && RegEx.URL.test(author_url)) {
-          author_parts.push(author_url);
+          author_parts.push(`"${author_url}"`);
         }
       }
       embedScript += `$v{author: ${author_parts.join(' && ')}}`;
@@ -43,19 +43,19 @@ class Output extends React.Component {
     // Title
     let titleElement = form.elements['title'];
     if (titleElement?.value) {
-      embedScript += `$v{title: ${titleElement.value}}`;
+      embedScript += `$v{title: "${titleElement.value}"}`;
     }
 
     // URL
     let urlElement = form.elements['url'];
     if (urlElement?.value && RegEx.URL.test(urlElement.value)) {
-      embedScript += `$v{url: ${urlElement.value}}`;
+      embedScript += `$v{url: "${urlElement.value}"}`;
     }
 
     // Description
     let descriptionElement = form.elements['description'];
     if (descriptionElement?.value) {
-      embedScript += `$v{description: ${descriptionElement.value}}`;
+      embedScript += `$v{description: "${descriptionElement.value}"}`;
     }
 
     // Fields
@@ -67,7 +67,25 @@ class Output extends React.Component {
         let fieldInline = form.elements[`field-${i}:inline`]?.checked;
   
         if (fieldName && fieldValue) {
-          embedScript += `$v{field: ${fieldName} && ${fieldValue}${fieldInline ? ' && inline' : ''}}`;
+          embedScript += `$v{field: "${fieldName}" && "${fieldValue}"${fieldInline ? ' && inline' : ''}}`;
+        }
+      }
+    }
+
+    // Buttons
+    let buttonsContainer = document.getElementById('buttons');
+    if (buttonsContainer?.children.length) {
+      for (let i = 0; i < buttonsContainer.children.length; i++) {
+        let buttonLabel = form.elements[`button-${i}:label`]?.value;
+        let buttonUrl = form.elements[`button-${i}:url`]?.value;
+        let buttonEmoji = form.elements[`button-${i}:emoji`]?.value;
+
+        if (buttonUrl && buttonLabel) {
+          let buttonParts = [buttonUrl, buttonLabel];
+          if (buttonEmoji) {
+            buttonParts.push(buttonEmoji);
+          }
+          embedScript += `$v{button: ${buttonParts.map(part => `"${part}"`).join(' && ')}}`;
         }
       }
     }
@@ -75,23 +93,23 @@ class Output extends React.Component {
     // Thumbnail
     let thumbnailElement = form.elements['thumbnail:url'];
     if (thumbnailElement?.value && RegEx.imageURL.test(thumbnailElement.value)) {
-      embedScript += `$v{thumbnail: ${thumbnailElement.value}}`;
+      embedScript += `$v{thumbnail: "${thumbnailElement.value}"}`;
     }
 
     // Image
     let imageElement = form.elements['image:url'];
     if (imageElement?.value && RegEx.imageURL.test(imageElement.value)) {
-      embedScript += `$v{image: ${imageElement.value}}`;
+      embedScript += `$v{image: "${imageElement.value}"}`;
     }
 
     // Footer
-    let footerElement = form.elements['footer:text'];
-    if (footerElement?.value) {
-      let footer_parts = [footerElement.value];
+    let footerTextElement = form.elements['footer:text'];
+    let footerIconElement = form.elements['footer:icon_url'];
+    if (footerTextElement?.value) {
+      let footer_parts = [footerTextElement.value];
       
-      let footer_icon_url = form.elements['footer:icon_url']?.value;
-      if (footer_icon_url && RegEx.imageURL.test(footer_icon_url)) {
-        footer_parts.push(footer_icon_url);
+      if (footerIconElement?.value && RegEx.imageURL.test(footerIconElement.value)) {
+        footer_parts.push(`"${footerIconElement.value}"`);
       }
       embedScript += `$v{footer: ${footer_parts.join(' && ')}}`;
     }
@@ -101,6 +119,9 @@ class Output extends React.Component {
     if (timestampElement?.checked) {
       embedScript += '$v{timestamp}';
     }
+
+    // Debugging: Log the generated embedScript
+    console.log('Generated embedScript:', embedScript);
 
     // Update state with the plain embedScript and set highlighted HTML
     this.setState({ embedScript }, () => {
@@ -122,7 +143,7 @@ class Output extends React.Component {
     let output = script;
     output = output.replace(/\{embed\}/g, '<span class="highlight keyword">{embed}</span>');
     output = output.replace(/\$v\{([^}]+)\}/g, '<span class="highlight function">$v{$1}</span>');
-    output = output.replace(/: ([^}\s&]+)/g, ': <span class="highlight string">$1</span>');
+    output = output.replace(/: "([^"}&]+)"/g, ': <span class="highlight string">"$1"</span>');
     return output;
   }
 
