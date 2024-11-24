@@ -65,13 +65,20 @@ class Footer extends React.Component {
           onChange={this.updateText.bind(this)}
           style={{ marginBottom: '10px', width: '100%' }}
         />
-        <div className="embed-timestamp">
+        <div className="embed-timestamp" style={{ display: 'flex', gap: '20px' }}>
           <label>
             <input
               name="timestamp"
               type="checkbox"
             />
             Add Timestamp
+          </label>
+          <label>
+            <input
+              name="reference"
+              type="checkbox"
+            />
+            Reply
           </label>
         </div>
       </div>

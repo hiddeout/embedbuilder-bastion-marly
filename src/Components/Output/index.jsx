@@ -134,6 +134,12 @@ class Output extends React.Component {
       }
     }
 
+
+    let referenceElement = form.elements['reference'];
+    if (referenceElement?.checked) {
+      embedScript += '{reference}\n';
+    }
+
     // Timestamp
     let timestampElement = form.elements['timestamp'];
     if (timestampElement?.checked) {
