@@ -16,16 +16,6 @@ code {
 /**
  * Header
  */
-header {
-  height: 50px;
-}
-header div {
-  position: relative;
-  display: inline-block;
-  float: left;
-  height: 100%;
-  line-height: 50px;
-}
 #back-to-home {
   width: 50px;
   text-align: center;
