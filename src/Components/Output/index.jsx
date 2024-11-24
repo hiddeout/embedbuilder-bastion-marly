@@ -15,12 +15,22 @@ class Output extends React.Component {
       console.error('Could not find form with ID "embed-builder"');
       return;
     }
+
+    // Start with empty script
+    let embedScript = '';
+
+    // Message
+    let messageElement = form.elements['message'];
+    if (messageElement?.value) {
+      embedScript += `$v{message: ${messageElement.value}}\n`;
+    }
   
-    let embedScript = '{embed}\n';
+    // Embed start
+    embedScript += '{embed}\n';
   
-    // Color (default to #000000 if not specified)
+    // Color (default to #00000 if not specified)
     let colorElement = form.elements['color'];
-    let color = colorElement && colorElement.value ? `#${colorElement.value}` : '#000000';
+    let color = colorElement && colorElement.value ? `#${colorElement.value}` : '#00000';
     embedScript += `$v{color: ${color}}\n`;
 
     // Author
@@ -108,13 +118,20 @@ class Output extends React.Component {
     // Footer
     let footerTextElement = form.elements['footer:text'];
     let footerIconElement = form.elements['footer:icon_url'];
-    if (footerTextElement?.value) {
-      let footer_parts = [footerTextElement.value];
+    if (footerTextElement?.value || footerIconElement?.value) {
+      let footer_parts = [];
+      
+      if (footerTextElement?.value) {
+        footer_parts.push(footerTextElement.value);
+      }
       
       if (footerIconElement?.value && RegEx.imageURL.test(footerIconElement.value)) {
-        footer_parts.push(`"${footerIconElement.value}"`);
+        footer_parts.push(footerIconElement.value);
       }
-      embedScript += `$v{footer: ${footer_parts.join(' && ')}}\n`;
+      
+      if (footer_parts.length > 0) {
+        embedScript += `$v{footer: ${footer_parts.join(' && ')}}\n`;
+      }
     }
 
     // Timestamp

@@ -11,14 +11,22 @@ class Footer extends React.Component {
   }
 
   updateText(event) {
+    const value = event.target.value;
     this.setState({
-      text: event.target.value
+      text: value
+    }, () => {
+      // Trigger regeneration of output after state update
+      const outputComponent = document.querySelector('.Output');
+      if (outputComponent) {
+        outputComponent.generateJSON();
+      }
     });
   }
 
   updateIconURL(event) {
+    const value = event.target.value;
     let classNames = event.target.className.trim().split(' ');
-    if (event.target.value.length && !RegEx.imageURL.test(event.target.value)) {
+    if (value.length && !RegEx.imageURL.test(value)) {
       classNames.push('invalid');
     }
     else {
@@ -27,15 +35,22 @@ class Footer extends React.Component {
     event.target.className = [ ...new Set(classNames) ].join(' ').trim();
 
     this.setState({
-      iconURL: event.target.value
+      iconURL: value
+    }, () => {
+      // Trigger regeneration of output after state update
+      const outputComponent = document.querySelector('.Output');
+      if (outputComponent) {
+        outputComponent.generateJSON();
+      }
     });
-  }
+  } 
 
   render() {
     return(
       <div className="embed-group embed-footer">
         <input 
           className="footer-icon-url"
+          name="footer:icon_url"
           type="text"
           placeholder="Footer Icon URL"
           value={this.state.iconURL}
@@ -43,6 +58,7 @@ class Footer extends React.Component {
           style={{ marginBottom: '10px', width: '100%' }}
         />
         <input 
+          name="footer:text"
           type="text"
           placeholder="Footer Text"
           value={this.state.text}

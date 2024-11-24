@@ -8,8 +8,9 @@ import Fields from './Fields';
 import Buttons from './Button';
 import Image from './Image';
 import Footer from './Footer';
+import Message from './Message';
 
-class Output extends React.Component {
+class Builder extends React.Component {
   render() {
     return(
       <div className="cell">
@@ -19,13 +20,14 @@ class Output extends React.Component {
               <div className="embed-content">
                 <div className="embed-content-inner">
 
+                <Message />
                   <Color />
                   <Author />
                   <Title />
                   <Description />
                   <Thumbnail />
                   <Fields />
-                  <Buttons /> {/* Include Buttons component */}
+                  <Buttons />
                   <Image />
 
                 </div>
@@ -41,4 +43,4 @@ class Output extends React.Component {
   }
 }
 
-export default Output;
+export default Builder;
