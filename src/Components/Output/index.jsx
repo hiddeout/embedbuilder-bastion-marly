@@ -22,7 +22,7 @@ class Output extends React.Component {
     // Message
     let messageElement = form.elements['message'];
     if (messageElement?.value) {
-      embedScript += `$v{message: ${messageElement.value}}\n`;
+      embedScript += `{message: ${messageElement.value}}\n`;
     }
   
     // Embed start
@@ -31,7 +31,7 @@ class Output extends React.Component {
     // Color (default to #00000 if not specified)
     let colorElement = form.elements['color'];
     let color = colorElement && colorElement.value ? `#${colorElement.value}` : '#00000';
-    embedScript += `$v{color: ${color}}\n`;
+    embedScript += `{color: ${color}}\n`;
 
     // Author
     let authorNameElement = form.elements['author:name'];
@@ -47,25 +47,25 @@ class Output extends React.Component {
           author_parts.push(`${author_url}`);
         }
       }
-      embedScript += `$v{author: ${author_parts.join(' && ')}}\n`;
+      embedScript += `{author: ${author_parts.join(' && ')}}\n`;
     }
 
     // Title
     let titleElement = form.elements['title'];
     if (titleElement?.value) {
-      embedScript += `$v{title: ${titleElement.value}}\n`;
+      embedScript += `{title: ${titleElement.value}}\n`;
     }
 
     // URL
     let urlElement = form.elements['url'];
     if (urlElement?.value && RegEx.URL.test(urlElement.value)) {
-      embedScript += `$v{url: ${urlElement.value}}\n`;
+      embedScript += `{url: ${urlElement.value}}\n`;
     }
 
     // Description
     let descriptionElement = form.elements['description'];
     if (descriptionElement?.value) {
-      embedScript += `$v{description: ${descriptionElement.value}}\n`;
+      embedScript += `{description: ${descriptionElement.value}}\n`;
     }
 
     // Fields
@@ -77,7 +77,7 @@ class Output extends React.Component {
         let fieldInline = form.elements[`field-${i}:inline`]?.checked;
   
         if (fieldName && fieldValue) {
-          embedScript += `$v{field: ${fieldName} && ${fieldValue}${fieldInline ? ' && inline' : ''}}\n`;
+          embedScript += `{field: ${fieldName} && ${fieldValue}${fieldInline ? ' && inline' : ''}}\n`;
         }
       }
     }
@@ -98,7 +98,7 @@ class Output extends React.Component {
           if (buttonEmoji) {
             buttonParts.push(buttonEmoji);
           }
-          embedScript += `$v{button: ${buttonParts.join(' && ')}}\n`;
+          embedScript += `{button: ${buttonParts.join(' && ')}}\n`;
         }
       }
     }
@@ -106,13 +106,13 @@ class Output extends React.Component {
     // Thumbnail
     let thumbnailElement = form.elements['thumbnail:url'];
     if (thumbnailElement?.value && RegEx.imageURL.test(thumbnailElement.value)) {
-      embedScript += `$v{thumbnail: ${thumbnailElement.value}}\n`;
+      embedScript += `{thumbnail: ${thumbnailElement.value}}\n`;
     }
 
     // Image
     let imageElement = form.elements['image:url'];
     if (imageElement?.value && RegEx.imageURL.test(imageElement.value)) {
-      embedScript += `$v{image: ${imageElement.value}}\n`;
+      embedScript += `{image: ${imageElement.value}}\n`;
     }
 
     // Footer
@@ -130,7 +130,7 @@ class Output extends React.Component {
       }
       
       if (footer_parts.length > 0) {
-        embedScript += `$v{footer: ${footer_parts.join(' && ')}}\n`;
+        embedScript += `{footer: ${footer_parts.join(' && ')}}\n`;
       }
     }
 
@@ -143,7 +143,7 @@ class Output extends React.Component {
     // Timestamp
     let timestampElement = form.elements['timestamp'];
     if (timestampElement?.checked) {
-      embedScript += '$v{timestamp}\n';
+      embedScript += '{timestamp}\n';
     }
 
     // Remove trailing newline if exists
@@ -171,7 +171,7 @@ class Output extends React.Component {
   highlightSyntax(script) {
     let output = script;
     output = output.replace(/\{embed\}/g, '<span class="highlight keyword">{embed}</span>');
-    output = output.replace(/\$v\{([^}]+)\}/g, '<span class="highlight function">$v{$1}</span>');
+    output = output.replace(/\\{([^}]+)\}/g, '<span class="highlight function">{$1}</span>');
     output = output.replace(/: "([^"}&]+)"/g, ': <span class="highlight string">"$1"</span>');
     output = output.replace(/\n/g, '<br>');
     return output;
